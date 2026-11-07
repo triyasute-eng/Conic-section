@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conic Lab | ห้องทดลองภาคตัดกรวย ม.5</title>
+<style>
+:root{--navy:#17345b;--blue:#4386d9;--cyan:#62cfe0;--gold:#ffd98a;--ink:#1c3552;--muted:#667f9c;--paper:#edf7ff;--line:#d6e8f5;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#eaf7ff 0%,#f7fbff 48%,#edf6ff 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);overflow-x:hidden}
+header{background:linear-gradient(120deg,#102b50,#28618e 65%,#4aa9bd);color:white;padding:28px max(20px,calc((100vw - 1180px)/2)) 25px;position:relative;overflow:hidden}
+.kicker{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#c7f5ff;font-weight:800}
+h1{font-size:clamp(27px,4vw,42px);margin:7px 0}.sub{color:#d7e7f8;margin:0;max-width:760px}
+.wrap{max-width:1180px;margin:24px auto;padding:0 18px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tab{border:1px solid var(--line);background:#fff;padding:11px 17px;border-radius:12px;font-weight:750;color:#42536b;cursor:pointer}
+.tab.active{background:linear-gradient(120deg,#4386d9,#42b5c5);color:white;border-color:var(--blue)}
+.layout{display:grid;grid-template-columns: minmax(0,1.5fr) minmax(290px,.9fr);gap:16px}
+.card{background:white;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 8px 24px #18345a0a}
+.card h2{font-size:18px;margin:0 0 12px}.graph-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.pill{background:#eaf2ff;color:#2455ae;border-radius:30px;padding:6px 10px;font-size:12px;font-weight:800}
+canvas{width:100%;height:auto;display:block;background:#fbfdff;border:1px solid #e6edf6;border-radius:13px;touch-action:pan-y}
+.equation{font-size:19px;font-weight:800;color:#174a9d;background:#eff5ff;padding:12px;border-radius:12px;text-align:center;margin:12px 0}
+.controls{display:grid;gap:13px}.control label{display:flex;justify-content:space-between;gap:8px;font-size:14px;font-weight:700}.control output{color:var(--blue);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--blue);margin-top:7px}
+.note{font-size:13px;color:var(--muted);line-height:1.6}.formula{background:#f7f9fd;border-left:4px solid var(--cyan);padding:12px;border-radius:8px;line-height:1.7;margin-top:12px}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.stat{background:#f5f8fd;border-radius:12px;padding:10px}.stat small{display:block;color:var(--muted)}.stat strong{font-size:17px}
+.lower{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.steps{padding-left:20px;line-height:1.8;margin:8px 0}.steps li{padding-left:3px}
+.quiz-q{padding:13px 0;border-bottom:1px solid var(--line)}.quiz-q:last-child{border:0}.quiz-q p{font-weight:750;margin:0 0 9px}.choice{display:block;padding:8px 10px;border:1px solid var(--line);border-radius:9px;margin:6px 0;cursor:pointer}.choice input{margin-right:7px;accent-color:var(--blue)}
+button.primary{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer;margin-top:12px}
+button.primary:hover{background:var(--blue)}.feedback{font-size:13px;margin-top:7px;line-height:1.5}.correct{color:#12824a}.wrong{color:#b34b36}
+footer{text-align:center;color:#78869a;font-size:12px;padding:24px}
+.hidden{display:none}.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#63728a;margin:8px 0}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+
+/* Winter wonderland decorations */
+.snow-layer{position:fixed;inset:0;pointer-events:none;z-index:20;overflow:hidden}
+.snowflake{position:absolute;top:-35px;color:#fff;text-shadow:0 1px 5px #8bbbd8;font-size:var(--size);opacity:.88;animation:snowfall var(--duration) linear infinite;animation-delay:var(--delay);left:var(--left)}
+@keyframes snowfall{to{transform:translate3d(var(--drift),110vh,0) rotate(360deg)}}
+.winter-buddy{display:inline-block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-7px) rotate(5deg)}}
+.winter-banner{background:linear-gradient(110deg,#e7f7ff,#f3f8ff 55%,#e3f4fa);border:1px solid #cce7f5;border-radius:15px;padding:12px 16px;margin:0 0 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#315b7c}
+.winter-banner strong{color:#204b75}
+.three-d-card{margin-top:16px;background:linear-gradient(145deg,#fafdff,#eaf6ff);border:1px solid #cfe5f4}
+.three-d-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(230px,.75fr);gap:15px;align-items:center}
+#solid3d{width:100%;height:auto;display:block;background:radial-gradient(ellipse at 50% 40%,#fff 0%,#edf8ff 75%);border:1px solid #d5e9f6;border-radius:14px}
+.solid-controls{display:grid;gap:10px}
+.solid-btn{border:1px solid #c9dfef;background:#fff;border-radius:10px;padding:9px 11px;text-align:left;font-weight:700;color:#345674;cursor:pointer}
+.solid-btn.active{background:#dff3fb;border-color:#68bed4;color:#174c75}
+.rotate-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rotate-row button{border:0;border-radius:9px;background:#dceefa;color:#23577e;padding:8px 11px;font-weight:800;cursor:pointer}.rotate-row button.running{background:#d9f5e8;color:#16734a}
+@media(max-width:800px){.three-d-layout{grid-template-columns:1fr}}
+
+@media(max-width:800px){.layout,.lower{grid-template-columns:1fr}.wrap{margin-top:16px}.card{padding:14px}.info-grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header>
+ <div class="kicker">Interactive Mathematics • Grade 11</div>
+ <h1>CONIC LAB : ห้องทดลองภาคตัดกรวย</h1>
+ <p class="sub">สำรวจวงกลม วงรี พาราโบลา และไฮเพอร์โบลา ผ่านกราฟที่ปรับเปลี่ยนได้ทันที ทดลอง เปรียบเทียบ และวิเคราะห์สมบัติของกราฟด้วยตนเอง</p>
+</header>
+<div class="snow-layer" aria-hidden="true">
+ <span class="snowflake" style="--left:4%;--size:17px;--duration:13s;--delay:-4s;--drift:25px">❄</span>
+ <span class="snowflake" style="--left:17%;--size:12px;--duration:17s;--delay:-9s;--drift:-30px">✦</span>
+ <span class="snowflake" style="--left:31%;--size:20px;--duration:15s;--delay:-2s;--drift:35px">❅</span>
+ <span class="snowflake" style="--left:49%;--size:14px;--duration:19s;--delay:-11s;--drift:-22px">❄</span>
+ <span class="snowflake" style="--left:67%;--size:18px;--duration:14s;--delay:-6s;--drift:28px">✧</span>
+ <span class="snowflake" style="--left:83%;--size:13px;--duration:18s;--delay:-3s;--drift:-35px">❅</span>
+ <span class="snowflake" style="--left:94%;--size:19px;--duration:16s;--delay:-8s;--drift:20px">❄</span>
+</div>
+<main class="wrap">
+ <div class="winter-banner"><span><strong>❄ Winter Math Wonderland</strong> — มาเรียนคณิตศาสตร์ท่ามกลางหิมะกัน!</span><span class="winter-buddy">☃️ 🧣</span></div>
+ <div class="tabs" role="tablist">
+  <button class="tab active" data-kind="circle">⭕ วงกลม</button>
+  <button class="tab" data-kind="ellipse">🥚 วงรี</button>
+  <button class="tab" data-kind="parabola">🌈 พาราโบลา</button>
+  <button class="tab" data-kind="hyperbola">🦋 ไฮเพอร์โบลา</button>
+ </div>
+ <section class="layout">
+  <div class="card">
+   <div class="graph-head"><h2>กราฟภาคตัดกรวยแบบ Real-time</h2><span class="pill" id="typePill">CIRCLE</span></div>
+   <canvas id="graph" width="760" height="520" aria-label="กราฟภาคตัดกรวย"></canvas>
+   <div class="legend"><span><i class="dot" style="background:#2864dc"></i>กราฟสมการ</span><span><i class="dot" style="background:#ff9f43"></i>จุดศูนย์กลาง / จุดยอด</span><span><i class="dot" style="background:#20b8c9"></i>เส้นกำกับ</span></div>
+   <div class="equation" id="equation"></div>
+   <div class="info-grid">
+    <div class="stat"><small>จุดศูนย์กลาง</small><strong id="center"> (0, 0)</strong></div>
+    <div class="stat"><small>ค่าพารามิเตอร์</small><strong id="param">r = 4</strong></div>
+    <div class="stat"><small>ลักษณะกราฟ</small><strong id="shape">ปิด</strong></div>
+   </div>
+  </div>
+  <aside class="card">
+   <h2>แผงควบคุมการทดลอง</h2>
+   <p class="note">เลื่อนแถบเพื่อเปลี่ยนค่าพารามิเตอร์ สังเกตการเปลี่ยนแปลงของตำแหน่ง ขนาด และรูปร่างกราฟ</p>
+   <div class="controls" id="controls"></div>
+   <div class="formula" id="explain"></div>
+   <p class="note" style="margin-bottom:0">คำแนะนำ: ลองเปลี่ยนทีละตัวแปร แล้วอธิบายว่ากราฟเปลี่ยนไปอย่างไร โดยคงค่าตัวแปรอื่นไว้เท่าเดิม</p>
+  </aside>
+ </section>
+ <section class="lower">
+  <div class="card">
+   <h2>ภารกิจนักสำรวจกราฟ</h2>
+   <ol class="steps" id="tasks">
+    <li>เพิ่มรัศมีของวงกลม แล้วสังเกตการเปลี่ยนแปลงของขนาด</li>
+    <li>เปลี่ยนตำแหน่งศูนย์กลาง แล้วสังเกตการเลื่อนของกราฟ</li>
+    <li>อธิบายความสัมพันธ์ระหว่างสมการกับรูปร่างกราฟ</li>
+   </ol>
+   <div class="formula" id="discovery">ชวนคิด: เมื่อเปลี่ยนค่าพารามิเตอร์เพียงค่าเดียว ส่วนใดของกราฟเปลี่ยนแปลง และส่วนใดยังคงเดิม?</div>
+  </div>
+  <div class="card">
+   <h2>สรุปแนวคิดสำคัญ</h2>
+   <div id="summary" class="note" style="font-size:14px">
+    วงกลมคือเซตของจุดบนระนาบที่อยู่ห่างจากจุดคงที่จุดหนึ่งเป็นระยะเท่ากัน เรียกระยะนั้นว่ารัศมี
+   </div>
+  </div>
+ </section>
+
+ <section class="card three-d-card">
+  <div class="graph-head"><h2>🧊 ห้องทดลองภาพสามมิติ : กรวยกับระนาบตัด</h2><span class="pill">3D CONIC MODEL</span></div>
+  <p class="note">สำรวจกรวยสามมิติและการตัดด้วยระนาบในมุมต่าง ๆ เพื่อเชื่อมโยงภาพสามมิติกับภาคตัดกรวยที่ปรากฏเป็นภาพสองมิติ</p>
+  <div class="three-d-layout">
+   <div>
+    <canvas id="solid3d" width="700" height="470" aria-label="แบบจำลองกรวยสามมิติและระนาบตัด"></canvas>
+    <div class="rotate-row"><button id="rotateLeft">↶ หมุนซ้าย</button><button id="rotateRight">↷ หมุนขวา</button><button id="autoRotate">▶ หมุนอัตโนมัติ</button><button id="reset3d">⟲ มุมเริ่มต้น</button><span class="note" id="rotationStatus">หยุดหมุน • ใช้แถบเลื่อนเพื่อปรับมุมมอง</span></div>
+    <input id="rotation" type="range" min="-60" max="60" value="0" style="width:100%;accent-color:#4386d9">
+   </div>
+   <div class="solid-controls">
+    <button class="solid-btn active" data-cut="circle">⭕ ตัดขนานกับฐาน → วงกลม</button>
+    <button class="solid-btn" data-cut="ellipse">🥚 ตัดเอียง → วงรี</button>
+    <button class="solid-btn" data-cut="parabola">🌈 ตัดขนานกับแนวข้างกรวย → พาราโบลา</button>
+    <button class="solid-btn" data-cut="hyperbola">🦋 ตัดผ่านกรวยสองส่วน → ไฮเพอร์โบลา</button>
+    <div class="formula" id="cutInfo"><strong>วงกลม</strong><br>ระนาบตัดขนานกับฐานของกรวยวงกลมตรง จะได้หน้าตัดเป็นวงกลม</div>
+    <p class="note">หมายเหตุ: ภาพเป็นแบบจำลองเชิงแนวคิดเพื่อช่วยมองเห็นความสัมพันธ์ของระนาบตัดและรูปหน้าตัด ไม่ใช่ภาพเรนเดอร์ทางวิศวกรรม</p>
+   </div>
+  </div>
+ </section>
+
+ <section class="card" style="margin-top:16px" id="quiz">
+  <h2>ตรวจสอบความเข้าใจท้ายกิจกรรม</h2>
+  <p class="note">เลือกคำตอบที่ถูกต้องทั้ง 3 ข้อ จากนั้นกด “ตรวจคำตอบ” เพื่อดูคะแนนและคำอธิบาย</p>
+  <div class="quiz-q" data-answer="b">
+   <p>1. สมการวงกลมที่มีจุดศูนย์กลาง (2, −1) และรัศมี 3 คือข้อใด?</p>
+   <label class="choice"><input type="radio" name="q1" value="a">(x + 2)² + (y − 1)² = 9</label>
+   <label class="choice"><input type="radio" name="q1" value="b">(x − 2)² + (y + 1)² = 9</label>
+   <label class="choice"><input type="radio" name="q1" value="c">(x − 2)² + (y + 1)² = 3</label>
+   <div class="feedback" id="f1"></div>
+  </div>
+  <div class="quiz-q" data-answer="c">
+   <p>2. กราฟวงรีมีสมการ x²/25 + y²/9 = 1 แกนเอกอยู่ในแนวใด?</p>
+   <label class="choice"><input type="radio" name="q2" value="a">แนวแกน y</label>
+   <label class="choice"><input type="radio" name="q2" value="b">แนวเส้น y = x</label>
+   <label class="choice"><input type="radio" name="q2" value="c">แนวแกน x</label>
+   <div class="feedback" id="f2"></div>
+  </div>
+  <div class="quiz-q" data-answer="a">
+   <p>3. พาราโบลามีสมการ y² = 12x จุดยอดอยู่ที่ใด?</p>
+   <label class="choice"><input type="radio" name="q3" value="a">(0, 0)</label>
+   <label class="choice"><input type="radio" name="q3" value="b">(3, 0)</label>
+   <label class="choice"><input type="radio" name="q3" value="c">(0, 12)</label>
+   <div class="feedback" id="f3"></div>
+  </div>
+  <button class="primary" id="checkQuiz">ตรวจคำตอบ</button>
+  <strong id="score" style="margin-left:12px"></strong>
+ </section>
+</main>
+<footer>CONIC LAB • สื่อการเรียนรู้คณิตศาสตร์ ระดับชั้นมัธยมศึกษาปีที่ 5</footer>
+<script>
+const canvas=document.getElementById('graph'),ctx=canvas.getContext('2d');
+const $=id=>document.getElementById(id);
+const state={kind:'circle',h:0,k:0,r:4,a:5,b:3,p:2};
+const configs={
+ circle:{title:'CIRCLE',controls:[['h','เลื่อนศูนย์กลางแนว x',-5,5,0,.5],['k','เลื่อนศูนย์กลางแนว y',-5,5,0,.5],['r','รัศมี r',1,7,4,.5]],summary:'วงกลมคือเซตของจุดบนระนาบที่อยู่ห่างจากจุดคงที่จุดหนึ่งเป็นระยะเท่ากัน เรียกระยะนั้นว่ารัศมี',explain:'สมการมาตรฐาน: (x − h)² + (y − k)² = r²<br>จุดศูนย์กลางคือ (h, k) และรัศมีเท่ากับ r',task:['เพิ่มรัศมีของวงกลม แล้วสังเกตการเปลี่ยนแปลงของขนาด','เปลี่ยนตำแหน่งศูนย์กลาง แล้วสังเกตการเลื่อนของกราฟ','อธิบายความสัมพันธ์ระหว่าง r กับพื้นที่ภายในวงกลม']},
+ ellipse:{title:'ELLIPSE',controls:[['h','ศูนย์กลาง h',-4,4,0,.5],['k','ศูนย์กลาง k',-4,4,0,.5],['a','กึ่งแกนเอก a',2,7,5,.5],['b','กึ่งแกนโท b',1,6,3,.5]],summary:'วงรีคือเซตของจุดที่ผลบวกของระยะทางจากจุดคงที่สองจุด (โฟกัส) มีค่าคงตัว โดย a เป็นกึ่งแกนเอก และ b เป็นกึ่งแกนโท',explain:'สมการมาตรฐาน: (x − h)²/a² + (y − k)²/b² = 1<br>เมื่อ a > b แกนเอกอยู่ในแนวแกน x<br>ระยะจากศูนย์กลางถึงโฟกัส c = √(a² − b²)',task:['เพิ่ม a โดยคง b ไว้ แล้วสังเกตความยาวแกนเอก','ปรับ b ให้เข้าใกล้ a แล้วสังเกตว่ากราฟคล้ายวงกลมขึ้นหรือไม่','เปรียบเทียบความยาวแกนเอกและแกนโท']},
+ parabola:{title:'PARABOLA',controls:[['h','ตำแหน่งจุดยอด h',-4,4,0,.5],['k','ตำแหน่งจุดยอด k',-4,4,0,.5],['p','ระยะ p จากจุดยอดถึงโฟกัส',.5,4,2,.5]],summary:'พาราโบลาคือเซตของจุดที่อยู่ห่างจากจุดโฟกัสและเส้นไดเรกตริกซ์เป็นระยะเท่ากัน มีจุดยอดและแกนสมมาตร',explain:'สมการมาตรฐาน: (y − k)² = 4p(x − h)<br>เมื่อ p > 0 กราฟเปิดไปทางขวา<br>จุดยอด (h, k), โฟกัส (h + p, k)',task:['เพิ่มค่า p แล้วสังเกตความกว้างของพาราโบลา','เลื่อนจุดยอดในแนวตั้งและแนวนอน','ระบุทิศทางการเปิดของกราฟจากเครื่องหมายของ p']},
+ hyperbola:{title:'HYPERBOLA',controls:[['h','ศูนย์กลาง h',-3,3,0,.5],['k','ศูนย์กลาง k',-3,3,0,.5],['a','กึ่งแกนตามขวาง a',1,4,2,.5],['b','กึ่งแกนสังยุค b',1,5,3,.5]],summary:'ไฮเพอร์โบลาคือเซตของจุดที่ค่าสัมบูรณ์ของผลต่างระยะทางจากจุดคงที่สองจุด (โฟกัส) มีค่าคงตัว มีสองแขนและมีเส้นกำกับเข้าใกล้',explain:'สมการมาตรฐาน: (x − h)²/a² − (y − k)²/b² = 1<br>จุดยอด (h ± a, k)<br>เส้นกำกับ: y − k = ±(b/a)(x − h)',task:['เพิ่ม a แล้วสังเกตตำแหน่งจุดยอด','เพิ่ม b แล้วสังเกตความชันของเส้นกำกับ','สังเกตว่าแขนทั้งสองของกราฟเข้าใกล้เส้นกำกับอย่างไร']}
+};
+function buildControls(){const c=configs[state.kind];$('typePill').textContent=c.title;$('controls').innerHTML='';
+c.controls.forEach(([key,label,min,max,val,step])=>{if(state[key]===undefined)state[key]=val;const d=document.createElement('div');d.className='control';d.innerHTML=`<label for="${key}">${label}<output id="out_${key}">${state[key]}</output></label><input id="${key}" type="range" min="${min}" max="${max}" step="${step}" value="${state[key]}">`; $('controls').appendChild(d);d.querySelector('input').addEventListener('input',e=>{state[key]=+e.target.value;$('out_'+key).textContent=state[key];draw()})});
+$('explain').innerHTML=c.explain;$('summary').textContent=c.summary;$('tasks').innerHTML=c.task.map(t=>`<li>${t}</li>`).join('');
+}
+function mapX(x){return canvas.width/2+x*38}function mapY(y){return canvas.height/2-y*38}
+function axes(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#fbfdff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#e8eef6';ctx.lineWidth=1;
+for(let x=-9;x<=9;x++){ctx.beginPath();ctx.moveTo(mapX(x),0);ctx.lineTo(mapX(x),canvas.height);ctx.stroke()}for(let y=-6;y<=6;y++){ctx.beginPath();ctx.moveTo(0,mapY(y));ctx.lineTo(canvas.width,mapY(y));ctx.stroke()}
+ctx.strokeStyle='#71839b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,mapY(0));ctx.lineTo(canvas.width,mapY(0));ctx.moveTo(mapX(0),0);ctx.lineTo(mapX(0),canvas.height);ctx.stroke();ctx.fillStyle='#64748b';ctx.font='13px sans-serif';ctx.fillText('x',canvas.width-18,mapY(0)-8);ctx.fillText('y',mapX(0)+8,15);
+for(let x=-9;x<=9;x+=1){if(x){ctx.fillText(x,mapX(x)-4,mapY(0)+17)}}for(let y=-6;y<=6;y++){if(y)ctx.fillText(y,mapX(0)+7,mapY(y)+4)}
+}
+function line(x1,y1,x2,y2,color='#20b8c9',dash=[6,5]){ctx.save();ctx.strokeStyle=color;ctx.setLineDash(dash);ctx.beginPath();ctx.moveTo(mapX(x1),mapY(y1));ctx.lineTo(mapX(x2),mapY(y2));ctx.stroke();ctx.restore()}
+function point(x,y,label){ctx.fillStyle='#ff9f43';ctx.beginPath();ctx.arc(mapX(x),mapY(y),5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#9a5715';ctx.font='bold 13px sans-serif';ctx.fillText(label,mapX(x)+8,mapY(y)-8)}
+function plot(fn,t0=-Math.PI*2,t1=Math.PI*2,step=.012){ctx.strokeStyle='#2864dc';ctx.lineWidth=3;ctx.beginPath();let started=false;for(let t=t0;t<=t1;t+=step){const p=fn(t);if(!p||!Number.isFinite(p[0])||!Number.isFinite(p[1])||Math.abs(p[0])>10||Math.abs(p[1])>7){started=false;continue}const X=mapX(p[0]),Y=mapY(p[1]);if(!started){ctx.moveTo(X,Y);started=true}else ctx.lineTo(X,Y)}ctx.stroke()}
+function draw(){axes();let {h,k,r,a,b,p,kind}=state;let eq='',center=`(${h}, ${k})`,param='',shape='';
+if(kind==='circle'){plot(t=>[h+r*Math.cos(t),k+r*Math.sin(t)]);point(h,k,'C');eq=`(x − ${h})² + (y − ${k})² = ${r*r}`;param=`r = ${r}`;shape='เส้นโค้งปิด'}
+if(kind==='ellipse'){plot(t=>[h+a*Math.cos(t),k+b*Math.sin(t)]);point(h,k,'C');eq=`(x − ${h})²/${a*a} + (y − ${k})²/${b*b} = 1`;param=`a=${a}, b=${b}`;shape='เส้นโค้งปิด'}
+if(kind==='parabola'){plot(t=>[h+t,k+t*t/(4*p)],-8,8,.01);point(h,k,'V');line(h-p,-7,h-p,7,'#20b8c9',[6,5]);point(h+p,k,'F');eq=`(y − ${k})² = ${4*p}(x − ${h})`;param=`p = ${p}`;shape='เปิดไปทางขว'}
+if(kind==='hyperbola'){plot(t=>[h+a*Math.cosh(t),k+b*Math.sinh(t)],-2.4,2.4,.01);plot(t=>[h-a*Math.cosh(t),k+b*Math.sinh(t)],-2.4,2.4,.01);line(h-9,k-(b/a)*9,h+9,k+(b/a)*9);line(h-9,k+(b/a)*9,h+9,k-(b/a)*9);point(h,k,'C');point(h+a,k,'V₁');point(h-a,k,'V₂');eq=`(x − ${h})²/${a*a} − (y − ${k})²/${b*b} = 1`;param=`a=${a}, b=${b}`;shape='มี 2 แขน'}
+$('equation').textContent=eq;$('center').textContent=center;$('param').textContent=param;$('shape').textContent=shape;
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));state.kind=b.dataset.kind;buildControls();draw()}));
+$('checkQuiz').addEventListener('click',()=>{let score=0;const explanations=[
+'ใช้รูปแบบ (x − h)² + (y − k)² = r² แทน h = 2, k = −1 และ r² = 9',
+'ตัวส่วนที่มากกว่าอยู่ใต้ x² จึงเป็นแกนเอกในแนวแกน x',
+'สมการ y² = 4px ไม่มีพจน์เลื่อนตำแหน่ง จึงมีจุดยอดที่จุดกำเนิด (0, 0)'
+];document.querySelectorAll('.quiz-q').forEach((q,i)=>{const selected=q.querySelector('input:checked');const ok=selected&&selected.value===q.dataset.answer;if(ok)score++;const f=$('f'+(i+1));f.className='feedback '+(ok?'correct':'wrong');f.textContent=(ok?'✓ ถูกต้อง  ':'✗ ยังไม่ถูกต้อง  ')+explanations[i]});$('score').textContent=`คะแนน ${score}/3`});
+buildControls();draw();
+
+// 3D cone and slicing-plane conceptual model
+const c3=document.getElementById('solid3d'),g3=c3.getContext('2d');
+let cutType='circle',rot=0;
+const cutCopy={
+ circle:'<strong>วงกลม</strong><br>ระนาบตัดขนานกับฐานของกรวยวงกลมตรง จะได้หน้าตัดเป็นวงกลม',
+ ellipse:'<strong>วงรี</strong><br>ระนาบตัดเอียงผ่านกรวยเพียงส่วนเดียว และไม่ขนานกับแนวข้างกรวย จะได้หน้าตัดเป็นวงรี',
+ parabola:'<strong>พาราโบลา</strong><br>ระนาบตัดขนานกับแนวข้างกรวยหนึ่งแนว จะได้หน้าตัดเป็นพาราโบลา',
+ hyperbola:'<strong>ไฮเพอร์โบลา</strong><br>ระนาบตัดผ่านกรวยสองส่วน (กรวยคู่) จะได้หน้าตัดเป็นไฮเพอร์โบลา'
+};
+function project3(x,y,z){const a=rot*Math.PI/180,xx=x*Math.cos(a)-y*Math.sin(a),yy=x*Math.sin(a)+y*Math.cos(a);return [350+xx*42,345-yy*42-z*42]}
+function path3(points,stroke,width=2,fill=null,dash=[]){g3.beginPath();points.forEach((p,i)=>{const q=project3(...p);if(i===0)g3.moveTo(...q);else g3.lineTo(...q)});if(fill){g3.closePath();g3.fillStyle=fill;g3.fill()}g3.strokeStyle=stroke;g3.lineWidth=width;g3.setLineDash(dash);g3.stroke();g3.setLineDash([])}
+function draw3d(){
+ g3.clearRect(0,0,c3.width,c3.height);
+ // soft grid floor
+ g3.strokeStyle='#e0edf6';g3.lineWidth=1;
+ for(let x=0;x<=700;x+=35){g3.beginPath();g3.moveTo(x,390);g3.lineTo(x,460);g3.stroke()}
+ // double cone outline: top and bottom
+ const n=80,upper=[],lower=[];
+ for(let i=0;i<=n;i++){const t=2*Math.PI*i/n;upper.push([Math.cos(t),Math.sin(t),0]);lower.push([Math.cos(t),Math.sin(t),-4])}
+ path3(upper,'#5d91b8',2);path3(lower,'#9bbbd2',1.5,[0,0,0,0]);
+ for(let i=0;i<8;i++){const t=i*Math.PI/4;path3([[0,0,4],[Math.cos(t),Math.sin(t),0],[0,0,-4]],'#8eb2cb',1.4)}
+ // top and bottom cone apexes
+ const apexTop=project3(0,0,4),apexBottom=project3(0,0,-4);
+ g3.fillStyle='#315f83';g3.beginPath();g3.arc(...apexTop,5,0,Math.PI*2);g3.fill();
+ g3.fillStyle='#719bb9';g3.beginPath();g3.arc(...apexBottom,5,0,Math.PI*2);g3.fill();
+ // plane polygon and intersection visual
+ let plane=[],curve=[];
+ if(cutType==='circle'){
+   for(let i=0;i<=n;i++){let t=2*Math.PI*i/n;curve.push([.67*Math.cos(t),.67*Math.sin(t),1.35])}
+   plane=[[-1.55,-1.2,1.35],[1.55,-1.2,1.35],[1.55,1.2,1.35],[-1.55,1.2,1.35]];
+ }else if(cutType==='ellipse'){
+   for(let i=0;i<=n;i++){let t=2*Math.PI*i/n;curve.push([.8*Math.cos(t),.8*Math.sin(t),1.0+.45*Math.cos(t)])}
+   plane=[[-1.5,-1.1,.55],[1.5,-1.1,1.45],[1.5,1.1,1.45],[-1.5,1.1,.55]];
+ }else if(cutType==='parabola'){
+   for(let i=0;i<=100;i++){let x=-.85+i*1.7/100;curve.push([x,.48*x*x-.25,1.0+.48*x])}
+   plane=[[-1.25,-1.0,.35],[1.25,-1.0,1.55],[1.25,1.0,1.55],[-1.25,1.0,.35]];
+ }else{
+   for(let s of [-1,1])for(let i=0;i<=50;i++){let y=-1.25+i*2.5/50;curve.push([s*(.45+.42*y*y),y,.5+.2*y])}
+   plane=[[-1.4,-1.1,.25],[1.4,-1.1,.25],[1.4,1.1,.95],[-1.4,1.1,.95]];
+ }
+ path3(plane,'#56b8cf',1.5,'rgba(96,202,225,.22)');
+ path3(curve,'#e58a38',4);
+ // annotation
+ g3.fillStyle='#315b7c';g3.font='bold 16px sans-serif';g3.fillText('กรวยคู่ (Double Cone)',18,28);
+ // 3D coordinate axes: X, Y and Z
+ const O=project3(0,0,-4.25), X=project3(2.6,0,-4.25), Y=project3(0,2.6,-4.25), Z=project3(0,0,4.8);
+ const axis=(p,q,color,label,dx,dy)=>{g3.strokeStyle=color;g3.lineWidth=3;g3.beginPath();g3.moveTo(...p);g3.lineTo(...q);g3.stroke();g3.fillStyle=color;g3.font='bold 17px sans-serif';g3.fillText(label,q[0]+dx,q[1]+dy)};
+ axis(O,X,'#e05b61','x',7,4);axis(O,Y,'#2a9d72','y',7,4);axis(O,Z,'#3979d5','z',7,-5);
+ g3.fillStyle='#315b7c';g3.font='13px sans-serif';g3.fillText('แกนพิกัดสามมิติ x, y, z',18,52);
+ g3.fillText('ระนาบตัด',520,55);g3.fillStyle='#e58a38';g3.fillText('เส้นหน้าตัด',520,77);
+ g3.fillStyle='#e58a38';g3.beginPath();g3.arc(505,72,4,0,Math.PI*2);g3.fill();
+}
+document.querySelectorAll('.solid-btn').forEach(btn=>btn.addEventListener('click',()=>{
+ document.querySelectorAll('.solid-btn').forEach(b=>b.classList.toggle('active',b===btn));
+ cutType=btn.dataset.cut;$('cutInfo').innerHTML=cutCopy[cutType];draw3d();
+}));
+$('rotation').addEventListener('input',e=>{rot=+e.target.value;draw3d()});
+$('rotateLeft').addEventListener('click',()=>{$('rotation').value=Math.max(-60,+$('rotation').value-10);rot=+$('rotation').value;draw3d()});
+$('rotateRight').addEventListener('click',()=>{$('rotation').value=Math.min(60,+$('rotation').value+10);rot=+$('rotation').value;draw3d()});
+let autoSpin=false,spinTimer=null;
+function stopAutoSpin(){
+ autoSpin=false;
+ if(spinTimer!==null){clearInterval(spinTimer);spinTimer=null}
+ $('autoRotate').textContent='▶ หมุนอัตโนมัติ';
+ $('autoRotate').classList.remove('running');
+ $('rotationStatus').textContent='หยุดหมุน • ใช้แถบเลื่อนเพื่อปรับมุมมอง';
+}
+$('autoRotate').addEventListener('click',()=>{
+ if(autoSpin){stopAutoSpin();return}
+ autoSpin=true;
+ $('autoRotate').textContent='Ⅱ หยุดหมุน';
+ $('autoRotate').classList.add('running');
+ $('rotationStatus').textContent='กำลังหมุนอัตโนมัติ • กดหยุดเพื่อหยุดภาพ';
+ spinTimer=setInterval(()=>{
+   rot+=1.2;
+   if(rot>60)rot=-60;
+   $('rotation').value=Math.round(rot);
+   draw3d();
+ },45);
+});
+$('reset3d').addEventListener('click',()=>{stopAutoSpin();$('rotation').value=0;rot=0;draw3d()});
+$('rotation').addEventListener('pointerdown',()=>{if(autoSpin)stopAutoSpin()});
+draw3d();
+
+</script>
+</body>
+</html>
